@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.css">
+    <title>Paises</title>
+</head>
+<body>
+    <br>
+    <div id="app">
+        <div class="container is-max-widescreen">
+            <nav class="breadcrumb is-centered" aria-label="breadcrumbs">
+                <ul>
+                    <li><a href="#">UNIVO</a></li>
+                    <li><a href="#">PRE MODULO IV</a></li>
+                    <li class="is-active"><a href="#" aria-current="page">CONSUMIENDO API</a></li>
+                </ul>
+            </nav>
+            <div class="columns is-multiline is-desktop">
+                <div class="column">
+                    <div class="field">
+                        <div class="control">
+                            <label for="inputbusca">Buscar</label> 
+                            <input type="text" class="input is-rounded" v-model="inputbusca" @keyup="buscando()" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label>Continentes</label>
+                        <div class="control has-icons-left">
+                            <div class="select is-medium is-rounded ">
+                                <select @change='filtroregion($event)'>
+                                    <option value="" disabled selected>Filtrar por Region</option>
+                                    <option value="Africa">Africa</option>
+                                    <option value="Americas">America</option>
+                                    <option value="Asia">Asia</option>
+                                    <option value="Europe">Europa</option>
+                                    <option value="Oceania">Oceania</option>
+                                </select>
+                            </div>
+                            <div class="icon is-small is-left">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns is-multiline is-desktop">
+                <div class="column is-3" v-for="Pais in arreglo" v-show="arreglo.length > 0">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                                <img :src="Pais.flag" height="80">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-content">
+                                    <p class="title is-4">{{ Pais.name }}</p>
+                                </div>
+                            </div>
+                            <div class="content">
+                                <p> Capital: {{Pais.capital}} </p>
+                                <p> Región : {{Pais.region}} </p>
+                                <p> Sub-Region: {{Pais.subregion}} </p>
+                                <p> Población : {{Pais.population}} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+    <script>
+        new Vue({
+            el:'#app',
+            data:{ 
+                inputbusca: '', 
+                arreglo: '',
+            },
+            methods:{
+                buscando(){
+                    fetch('https://restcountries.eu/rest/v2/name/'+this.inputbusca)
+                    .then(respuesta => respuesta.json())
+                    .then(response => this.arreglo = response)
+                    .catch(Error => { console.log(Error) });
+                },
+                filtroregion(event){
+                    fetch('https://restcountries.eu/rest/v2/region/'+event.target.value)
+                    .then(respuesta => respuesta.json())
+                    .then(response => this.arreglo = response)
+                    .catch(Error => { console.log(Error) });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
